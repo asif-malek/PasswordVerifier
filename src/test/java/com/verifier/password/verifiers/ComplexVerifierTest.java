@@ -1,18 +1,17 @@
 package com.verifier.password.verifiers;
 
+import com.verifier.password.VerificationResponse;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ComplexVerifierTest {
 
-    MasterConditionVerifier complexPasswordVerifier = new ComplexPasswordVerifier();
+    MultiConditionVerifier complexPasswordVerifier = new ComplexPasswordVerifier();
 
     @Test
     public void isInstanceOfMultiVerification(){
@@ -26,6 +25,15 @@ public class ComplexVerifierTest {
         complexPasswordVerifier.addVerifiers(new LengthVerifier(8));
         complexPasswordVerifier.addVerifiers(new NullVerifier());
         assertNotEquals(Collections.EMPTY_LIST, complexPasswordVerifier.getVerifiers());
+    }
 
+    @Test
+    public void shouldApplyMultipleVerifications(){
+        complexPasswordVerifier.addVerifiers(new LengthVerifier(8));
+        complexPasswordVerifier.addVerifiers(new NullVerifier());
+        MultiConditionVerificationResponse response = complexPasswordVerifier.verify("test");
+
+        assertTrue(response.isOk());
+        assertNotEquals(Collections.EMPTY_LIST, response.getResponse());
     }
 }
