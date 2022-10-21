@@ -10,26 +10,33 @@
     <build>
 
        <plugins>
-          <!--  <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>src/main/java/com/verifier/password</source>
-                    <target>test/main/java/com/verifier/password</target>
-                </configuration>
-            </plugin>-->
            <plugin>
                <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-compiler-plugin</artifactId>
+               <artifactId>maven-surefire-plugin</artifactId>
+               <version>3.0.0-M7</version>
+               <dependencies>
+                   <dependency>
+                       <groupId>org.junit.jupiter</groupId>
+                       <artifactId>junit-jupiter-engine</artifactId>
+                       <version>5.4.0</version>
+                   </dependency>
+               </dependencies>
+           </plugin>
+           <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-surefire-plugin</artifactId>
+               <version>3.0.0-M7</version>
                <configuration>
-                   <compilerArgs>
-                       <arg>--add-exports</arg>
-                       <arg>java.management/sun.management=ALL-UNNAMED</arg>
-                   </compilerArgs>
-                   <source>1.9</source>
-                   <target>1.9</target>
+                   <includes>
+                       <include>**/*Test.java</include>
+                   </includes>
+                   <excludes>
+                       <exclude>**/BaseTest.java</exclude>
+                       <exclude>**/TestsUtil.java</exclude>
+                   </excludes>
                </configuration>
            </plugin>
+
         </plugins>
 
     </build>
@@ -47,6 +54,18 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.8.1</version>
             <scope>package,test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>5.4.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
         </dependency>
     </dependencies>
 </project>
