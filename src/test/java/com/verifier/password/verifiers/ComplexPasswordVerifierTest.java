@@ -1,12 +1,11 @@
 package com.verifier.password.verifiers;
 
+import com.verifier.password.verifiers.exception.InvalidNoOfConditionsException;
 import com.verifier.password.verifiers.exception.NoVerifiersAddedException;
 import com.verifier.password.verifiers.exception.VerifierException;
-import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,7 +23,7 @@ public class ComplexPasswordVerifierTest {
 
     MultiConditionVerifier complexPasswordVerifier= new ComplexPasswordVerifier();
 
-
+    MultiConditionVerificationResponse multiConditionResponse;
     @BeforeEach
     public void setup(){
 
@@ -33,6 +32,7 @@ public class ComplexPasswordVerifierTest {
     @AfterEach
     public void tearDown(){
         complexPasswordVerifier.getVerifiers().clear();
+        multiConditionResponse = null;
     }
 
     @Test
@@ -61,7 +61,7 @@ public class ComplexPasswordVerifierTest {
         complexPasswordVerifier.addVerifiers(new HasNumberVerifier());
 
         List<String> expectedList = Arrays.asList(PASSED,PASSED,PASSED,PASSED,PASSED);
-        MultiConditionVerificationResponse multiConditionResponse = complexPasswordVerifier.verify("Verify1");
+        multiConditionResponse = complexPasswordVerifier.verify("Verify1");
 
         assertTrue(multiConditionResponse.isOk());
         assertNotEquals(Collections.EMPTY_LIST, multiConditionResponse.getResponse());
@@ -74,11 +74,11 @@ public class ComplexPasswordVerifierTest {
     public void emptyStringMultiVerification() throws VerifierException {
         complexPasswordVerifier.addVerifiers(new MaxLengthVerifier(8));
         complexPasswordVerifier.addVerifiers(new NullVerifier());
-        MultiConditionVerificationResponse emptyStringResponse = complexPasswordVerifier.verify("");
+        multiConditionResponse = complexPasswordVerifier.verify("");
         List<String> expectedList = Arrays.asList(PASSED,STRING_IS_NULL);
-        assertFalse(emptyStringResponse.isOk());
-        assertNotEquals(Collections.EMPTY_LIST, emptyStringResponse.getResponse());
-        assertThat(expectedList,is(emptyStringResponse.getResponse()));
+        assertFalse(multiConditionResponse.isOk());
+        assertNotEquals(Collections.EMPTY_LIST, multiConditionResponse.getResponse());
+        assertThat(expectedList,is(multiConditionResponse.getResponse()));
 
     }
 
@@ -97,31 +97,61 @@ public class ComplexPasswordVerifierTest {
     @Test
     public void shouldExecutePrimeVerifierAlongWithOtherVerifier()throws VerifierException {
         complexPasswordVerifier.addVerifiers(new HasNumberVerifier());
-        MultiConditionVerificationResponse primeVerifierResponse =  complexPasswordVerifier.verify("Password1",new MaxLengthVerifier(9));
-        assertTrue(primeVerifierResponse.isOk());
+        multiConditionResponse=  complexPasswordVerifier.verify("Password1",new MaxLengthVerifier(9));
+        assertTrue(multiConditionResponse.isOk());
         List<String> expectedList = Arrays.asList(PASSED,PASSED);
-        assertThat(expectedList,is(primeVerifierResponse.getResponse()));
+        assertThat(expectedList,is(multiConditionResponse.getResponse()));
     }
 
     @Test
     public void shouldEFailIfPrimeVerifierNotVerified()throws VerifierException {
         complexPasswordVerifier.addVerifiers(new HasNumberVerifier());
 
-        MultiConditionVerificationResponse primeVerifierResponse =  complexPasswordVerifier.verify("Password1",new MaxLengthVerifier(8));
-        assertFalse(primeVerifierResponse.isOk());
+        multiConditionResponse =  complexPasswordVerifier.verify("Password1",new MaxLengthVerifier(8));
+        assertFalse(multiConditionResponse.isOk());
         List<String> expectedList = Arrays.asList(PASSED,LENGTH_IS_LARGER_THAN);
-        assertNotEquals(Collections.EMPTY_LIST, primeVerifierResponse.getResponse());
+        assertNotEquals(Collections.EMPTY_LIST, multiConditionResponse.getResponse());
 
     }
 
     @Test
     public void shouldEPassIfOnlyPrimeVerifierProvided()throws VerifierException {
 
-        MultiConditionVerificationResponse primeVerifierResponse =  complexPasswordVerifier.verify("Password1",new MaxLengthVerifier(9));
-        assertTrue(primeVerifierResponse.isOk());
+        multiConditionResponse =  complexPasswordVerifier.verify("Password1",new MaxLengthVerifier(9));
+        assertTrue(multiConditionResponse.isOk());
         List<String> expectedList = Arrays.asList(PASSED);
-        assertNotEquals(Collections.EMPTY_LIST, primeVerifierResponse.getResponse());
+        assertNotEquals(Collections.EMPTY_LIST, multiConditionResponse.getResponse());
 
+    }
+
+    @Test
+    public void shouldPassIfAtleastSpecificNoOfConditionsVerified() throws VerifierException {
+        complexPasswordVerifier.addVerifiers(new MaxLengthVerifier(2));
+        complexPasswordVerifier.addVerifiers(new NullVerifier());
+        complexPasswordVerifier.addVerifiers(new HasUpperCaseVerifier());
+        complexPasswordVerifier.addVerifiers(new HasLowerCaseVerifier());
+        complexPasswordVerifier.addVerifiers(new HasNumberVerifier());
+
+
+        List<String> expectedList = Arrays.asList(LENGTH_IS_LARGER_THAN+2,PASSED,PASSED,PASSED,STRING_DOES_NOT_CONTAIN_A_NUMBER);
+        multiConditionResponse =  complexPasswordVerifier.verify("Password",2);
+        assertTrue(multiConditionResponse.isOk());
+        assertNotEquals(Collections.EMPTY_LIST, multiConditionResponse.getResponse());
+        System.out.println(multiConditionResponse);
+        assertThat(expectedList,is(multiConditionResponse.getResponse()));
+    }
+
+
+    @Test
+    public void whenNoOfConditionsAreInvalidThenThrowException() throws VerifierException {
+
+
+        InvalidNoOfConditionsException thrown = assertThrows(
+                InvalidNoOfConditionsException.class,
+                () -> complexPasswordVerifier.verify("",-1), INVALID_NO_OF_CONDITIONS
+        );
+
+        assertTrue(thrown.getMessage().contains(INVALID_NO_OF_CONDITIONS));
     }
 
 

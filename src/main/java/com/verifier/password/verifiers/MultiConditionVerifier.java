@@ -15,4 +15,6 @@ public interface MultiConditionVerifier{
     MultiConditionVerificationResponse verify(String password) throws  VerifierException;
 
     MultiConditionVerificationResponse verify(String password, Verifier primeVerifier) throws VerifierException;
+
+    MultiConditionVerificationResponse verify(String password, int noOfConditions) throws VerifierException;
 }

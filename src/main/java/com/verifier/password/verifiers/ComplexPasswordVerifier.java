@@ -1,13 +1,17 @@
 package com.verifier.password.verifiers;
 
 import com.verifier.password.VerificationResponse;
+import com.verifier.password.verifiers.exception.InvalidNoOfConditionsException;
 import com.verifier.password.verifiers.exception.NoVerifiersAddedException;
 import com.verifier.password.verifiers.exception.VerifierException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.verifier.password.VerificationConstants.PASSED;
 
 public class ComplexPasswordVerifier implements MultiConditionVerifier {
 
@@ -72,5 +76,23 @@ public class ComplexPasswordVerifier implements MultiConditionVerifier {
 
         return multiConditionVerificationResponse;
 
+    }
+
+    @Override
+    public MultiConditionVerificationResponse verify(String password, int noOfConditions) throws VerifierException {
+
+        if(noOfConditions<1){
+            throw new InvalidNoOfConditionsException();
+        }
+
+        MultiConditionVerificationResponse multiConditionVerificationResponse = this.verify(password);
+        if (multiConditionVerificationResponse.isOk()){
+            return multiConditionVerificationResponse;
+        }
+
+        if(noOfConditions<=Collections.frequency(multiConditionVerificationResponse.getResponse(), PASSED)){
+           multiConditionVerificationResponse.setOk(true);
+        }
+        return multiConditionVerificationResponse;
     }
 }
