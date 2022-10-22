@@ -18,6 +18,7 @@ public class ComplexPasswordVerifierTest {
 
     MultiConditionVerifier complexPasswordVerifier = new ComplexPasswordVerifier();
 
+
     @Test
     public void isInstanceOfMultiVerification(){
 
@@ -29,6 +30,9 @@ public class ComplexPasswordVerifierTest {
     public void shouldContainMultipleVerification(){
         complexPasswordVerifier.addVerifiers(new MaxLengthVerifier(8));
         complexPasswordVerifier.addVerifiers(new NullVerifier());
+        complexPasswordVerifier.addVerifiers(new HasUpperCaseVerifier());
+        complexPasswordVerifier.addVerifiers(new HasLowerCaseVerifier());
+        complexPasswordVerifier.addVerifiers(new HasNumberVerifier());
         assertNotEquals(Collections.EMPTY_LIST, complexPasswordVerifier.getVerifiers());
     }
 
@@ -36,12 +40,16 @@ public class ComplexPasswordVerifierTest {
     public void shouldApplyMultipleVerifications(){
         complexPasswordVerifier.addVerifiers(new MaxLengthVerifier(8));
         complexPasswordVerifier.addVerifiers(new NullVerifier());
+        complexPasswordVerifier.addVerifiers(new HasUpperCaseVerifier());
+        complexPasswordVerifier.addVerifiers(new HasLowerCaseVerifier());
+        complexPasswordVerifier.addVerifiers(new HasNumberVerifier());
 
-        List<String> expectedList = Arrays.asList(PASSED,PASSED);
-        MultiConditionVerificationResponse multiConditionResponse = complexPasswordVerifier.verify("verify");
+        List<String> expectedList = Arrays.asList(PASSED,PASSED,PASSED,PASSED,PASSED);
+        MultiConditionVerificationResponse multiConditionResponse = complexPasswordVerifier.verify("Verify1");
 
         assertTrue(multiConditionResponse.isOk());
         assertNotEquals(Collections.EMPTY_LIST, multiConditionResponse.getResponse());
+        System.out.println(multiConditionResponse);
         assertThat(expectedList,is(multiConditionResponse.getResponse()));
 
     }

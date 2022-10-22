@@ -5,7 +5,7 @@ import com.verifier.password.VerificationResponse;
 import static com.verifier.password.VerificationConstants.PASSED;
 import static com.verifier.password.VerificationConstants.STRING_DOES_NOT_CONTAIN_A_LOWER_CASE_CHAR;
 
-public  class RegexVerifier implements Verifier{
+public abstract class RegexVerifier implements Verifier{
 
 
     private String regex;
