@@ -5,6 +5,7 @@ import com.verifier.password.verifiers.exception.NoVerifiersAddedException;
 import com.verifier.password.verifiers.exception.VerifierException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,30 @@ public class ComplexPasswordVerifier implements MultiConditionVerifier {
         response.setResponse(verifiers.stream().map(verifier->verifier.verify(password)).map(r ->setStatus(r)).map( r -> r.getResponse()).collect( Collectors.toList() ));
         response.setOk(getStatus());
      return   response;
+
+    }
+
+    @Override
+    public MultiConditionVerificationResponse verify(String password, Verifier primeVerifier) throws VerifierException {
+
+
+        MultiConditionVerificationResponse multiConditionVerificationResponse = new MultiConditionVerificationResponse();;
+        VerificationResponse primeResponse = primeVerifier.verify(password);
+        multiConditionVerificationResponse.setResponse(Arrays.asList(primeResponse.getResponse()));
+
+        if(!primeResponse.isOk()){
+            multiConditionVerificationResponse.setOk(false);
+        }else{
+            if(verifiers.size()>0) {
+                multiConditionVerificationResponse =  verify(password);
+                multiConditionVerificationResponse.getResponse().add(primeResponse.getResponse());
+            }else{
+                multiConditionVerificationResponse.setOk(true);
+            }
+        }
+
+
+        return multiConditionVerificationResponse;
 
     }
 }

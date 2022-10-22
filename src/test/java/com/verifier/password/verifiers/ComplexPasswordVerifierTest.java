@@ -81,8 +81,6 @@ public class ComplexPasswordVerifierTest {
         assertThat(expectedList,is(emptyStringResponse.getResponse()));
 
     }
-    @Rule
-    public ExpectedException exceptionRule = ExpectedException.none();
 
     @Test
     public void whenNoVerifiersAddedThenThrowException() throws VerifierException {
@@ -94,6 +92,36 @@ public class ComplexPasswordVerifierTest {
         );
 
         assertTrue(thrown.getMessage().contains(NO_VERIFIER_ADDED));
+    }
+
+    @Test
+    public void shouldExecutePrimeVerifierAlongWithOtherVerifier()throws VerifierException {
+        complexPasswordVerifier.addVerifiers(new HasNumberVerifier());
+        MultiConditionVerificationResponse primeVerifierResponse =  complexPasswordVerifier.verify("Password1",new MaxLengthVerifier(9));
+        assertTrue(primeVerifierResponse.isOk());
+        List<String> expectedList = Arrays.asList(PASSED,PASSED);
+        assertThat(expectedList,is(primeVerifierResponse.getResponse()));
+    }
+
+    @Test
+    public void shouldEFailIfPrimeVerifierNotVerified()throws VerifierException {
+        complexPasswordVerifier.addVerifiers(new HasNumberVerifier());
+
+        MultiConditionVerificationResponse primeVerifierResponse =  complexPasswordVerifier.verify("Password1",new MaxLengthVerifier(8));
+        assertFalse(primeVerifierResponse.isOk());
+        List<String> expectedList = Arrays.asList(PASSED,LENGTH_IS_LARGER_THAN);
+        assertNotEquals(Collections.EMPTY_LIST, primeVerifierResponse.getResponse());
+
+    }
+
+    @Test
+    public void shouldEPassIfOnlyPrimeVerifierProvided()throws VerifierException {
+
+        MultiConditionVerificationResponse primeVerifierResponse =  complexPasswordVerifier.verify("Password1",new MaxLengthVerifier(9));
+        assertTrue(primeVerifierResponse.isOk());
+        List<String> expectedList = Arrays.asList(PASSED);
+        assertNotEquals(Collections.EMPTY_LIST, primeVerifierResponse.getResponse());
+
     }
 
 
