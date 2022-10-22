@@ -2,9 +2,13 @@ package com.verifier.password.verifiers;
 
 import com.verifier.password.VerificationResponse;
 
-public class LengthVerifier implements Verifier {
+import static com.verifier.password.VerificationConstants.*;
 
-    public LengthVerifier(int length) {
+public class MaxLengthVerifier implements Verifier {
+
+
+
+    public MaxLengthVerifier(int length) {
         LENGTH = length;
     }
 
@@ -14,7 +18,7 @@ public class LengthVerifier implements Verifier {
     @Override
     public VerificationResponse verify(String password) {
         boolean ok = password.length()<=LENGTH;
-        String response = (ok)?"Passed":"Password length is larger than "+LENGTH;
+        String response = (ok)?PASSED: LENGTH_IS_LARGER_THAN +LENGTH;
         return new VerificationResponse(ok,response);
     }
 

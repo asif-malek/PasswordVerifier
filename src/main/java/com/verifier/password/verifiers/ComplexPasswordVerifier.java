@@ -10,6 +10,8 @@ public class ComplexPasswordVerifier implements MultiConditionVerifier {
 
     private List<Verifier> verifiers = new ArrayList<>();
 
+    private boolean status = true;
+
     @Override
     public void addVerifiers(Verifier verifier) {
         verifiers.add(verifier);
@@ -23,9 +25,22 @@ public class ComplexPasswordVerifier implements MultiConditionVerifier {
         this.verifiers = verifiers;
     }
 
+    private VerificationResponse setStatus(VerificationResponse response){
+        if(!response.isOk()){
+            this.status=false;
+        }
+        return response;
+    }
+
+    private boolean getStatus(){
+        return status;
+    }
     @Override
     public MultiConditionVerificationResponse verify(String password) {
-     return   new MultiConditionVerificationResponse(true,verifiers.stream().map( verifier -> verifier.verify(password).getResponse()).collect( Collectors.toList() ));
+        MultiConditionVerificationResponse response = new MultiConditionVerificationResponse();
+        response.setResponse(verifiers.stream().map(verifier->verifier.verify(password)).map(r ->setStatus(r)).map( r -> r.getResponse()).collect( Collectors.toList() ));
+        response.setOk(getStatus());
+     return   response;
 
     }
 }

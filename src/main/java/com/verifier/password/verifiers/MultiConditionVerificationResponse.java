@@ -12,6 +12,16 @@ public class MultiConditionVerificationResponse {
         this.response = response;
     }
 
+    public MultiConditionVerificationResponse(){}
+
+    public void setOk(boolean ok) {
+        this.ok = ok;
+    }
+
+    public void setResponse(List<String> response) {
+        this.response = response;
+    }
+
     public boolean isOk() {
         return ok;
     }
