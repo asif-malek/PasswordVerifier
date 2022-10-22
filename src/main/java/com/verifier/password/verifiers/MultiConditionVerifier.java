@@ -1,6 +1,8 @@
 package com.verifier.password.verifiers;
 
 import com.verifier.password.VerificationResponse;
+import com.verifier.password.verifiers.exception.NoVerifiersAddedException;
+import com.verifier.password.verifiers.exception.VerifierException;
 
 import java.util.List;
 
@@ -10,6 +12,6 @@ public interface MultiConditionVerifier{
 
     List<Verifier> getVerifiers();
 
-    MultiConditionVerificationResponse verify(String password);
+    MultiConditionVerificationResponse verify(String password) throws  VerifierException;
 
 }

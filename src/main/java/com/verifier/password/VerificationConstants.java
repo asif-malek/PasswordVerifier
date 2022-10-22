@@ -11,4 +11,6 @@ public interface VerificationConstants {
 
     public static final String STRING_DOES_NOT_CONTAIN_AN_UPPER_CASE_CHAR = "String does not contain an uppercase character";
     public static final String STRING_DOES_NOT_CONTAIN_A_LOWER_CASE_CHAR = "String does not contain a lowercase character";
+
+    public static final String NO_VERIFIER_ADDED = "No verifier added";
 }

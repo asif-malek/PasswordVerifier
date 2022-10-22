@@ -1,6 +1,8 @@
 package com.verifier.password.verifiers;
 
 import com.verifier.password.VerificationResponse;
+import com.verifier.password.verifiers.exception.NoVerifiersAddedException;
+import com.verifier.password.verifiers.exception.VerifierException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +38,10 @@ public class ComplexPasswordVerifier implements MultiConditionVerifier {
         return status;
     }
     @Override
-    public MultiConditionVerificationResponse verify(String password) {
+    public MultiConditionVerificationResponse verify(String password) throws VerifierException {
+        if(verifiers.size()==0){
+            throw new NoVerifiersAddedException();
+        }
         MultiConditionVerificationResponse response = new MultiConditionVerificationResponse();
         response.setResponse(verifiers.stream().map(verifier->verifier.verify(password)).map(r ->setStatus(r)).map( r -> r.getResponse()).collect( Collectors.toList() ));
         response.setOk(getStatus());

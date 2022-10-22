@@ -1,13 +1,18 @@
 package com.verifier.password.verifiers;
 
+import com.verifier.password.verifiers.exception.NoVerifiersAddedException;
+import com.verifier.password.verifiers.exception.VerifierException;
+import org.junit.Rule;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.verifier.password.VerificationConstants.PASSED;
-import static com.verifier.password.VerificationConstants.STRING_IS_NULL;
+import static com.verifier.password.VerificationConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import static org.junit.Assert.assertThat;
@@ -16,8 +21,19 @@ import static org.hamcrest.CoreMatchers.*;
 
 public class ComplexPasswordVerifierTest {
 
-    MultiConditionVerifier complexPasswordVerifier = new ComplexPasswordVerifier();
 
+    MultiConditionVerifier complexPasswordVerifier= new ComplexPasswordVerifier();
+
+
+    @BeforeEach
+    public void setup(){
+
+    }
+
+    @AfterEach
+    public void tearDown(){
+        complexPasswordVerifier.getVerifiers().clear();
+    }
 
     @Test
     public void isInstanceOfMultiVerification(){
@@ -37,7 +53,7 @@ public class ComplexPasswordVerifierTest {
     }
 
     @Test
-    public void shouldApplyMultipleVerifications(){
+    public void shouldApplyMultipleVerifications() throws VerifierException {
         complexPasswordVerifier.addVerifiers(new MaxLengthVerifier(8));
         complexPasswordVerifier.addVerifiers(new NullVerifier());
         complexPasswordVerifier.addVerifiers(new HasUpperCaseVerifier());
@@ -55,7 +71,7 @@ public class ComplexPasswordVerifierTest {
     }
 
     @Test
-    public void emptyStringMultiVerification(){
+    public void emptyStringMultiVerification() throws VerifierException {
         complexPasswordVerifier.addVerifiers(new MaxLengthVerifier(8));
         complexPasswordVerifier.addVerifiers(new NullVerifier());
         MultiConditionVerificationResponse emptyStringResponse = complexPasswordVerifier.verify("");
@@ -65,4 +81,23 @@ public class ComplexPasswordVerifierTest {
         assertThat(expectedList,is(emptyStringResponse.getResponse()));
 
     }
+    @Rule
+    public ExpectedException exceptionRule = ExpectedException.none();
+
+    @Test
+    public void whenNoVerifiersAddedThenThrowException() throws VerifierException {
+
+
+        NoVerifiersAddedException thrown = assertThrows(
+                NoVerifiersAddedException.class,
+                () -> complexPasswordVerifier.verify(""), NO_VERIFIER_ADDED
+        );
+
+        assertTrue(thrown.getMessage().contains(NO_VERIFIER_ADDED));
+    }
+
+
+
+
+
 }
