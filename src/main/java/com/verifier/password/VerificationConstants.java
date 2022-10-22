@@ -6,4 +6,6 @@ public interface VerificationConstants {
     public static final String PASSED = "Passed";
 
     public static final String LENGTH_IS_LARGER_THAN = "Password length is larger than ";
+
+    public static final String STRING_DOES_NOT_CONTAIN_A_NUMBER = "String does not contain a number";
 }
