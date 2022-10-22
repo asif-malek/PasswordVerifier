@@ -10,8 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class HasNumberVerifierTest {
 
     public static final String stringWithNumber = "has1";
-    public static final String VERIFY = "verify";
-    private HasNumberVerifier hasNumberVerifier= new HasNumberVerifier();
+    private Verifier hasNumberVerifier= new HasNumberVerifier();
 
     @Test
     public void testPasswordWithANumber(){
@@ -27,7 +26,7 @@ class HasNumberVerifierTest {
     public void testPasswordWithOutNumber(){
 
 
-        VerificationResponse notNullResponse = hasNumberVerifier.verify(VERIFY);
+        VerificationResponse notNullResponse = hasNumberVerifier.verify(TestConstants.VERIFY);
         assertFalse(notNullResponse.isOk());
 
         assertEquals(STRING_DOES_NOT_CONTAIN_A_NUMBER, notNullResponse.getResponse());

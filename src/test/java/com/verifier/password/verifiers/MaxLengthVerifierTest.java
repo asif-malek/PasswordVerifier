@@ -6,11 +6,12 @@ import org.junit.jupiter.api.Test;
 
 import static com.verifier.password.VerificationConstants.LENGTH_IS_LARGER_THAN;
 import static com.verifier.password.VerificationConstants.PASSED;
+import static com.verifier.password.verifiers.TestConstants.VERIFY;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MaxLengthVerifierTest {
 
-    public static final String VERIFY = "verify";
+
     private int length;
 
     @Test
@@ -18,8 +19,9 @@ public class MaxLengthVerifierTest {
 
         MaxLengthVerifier maxLengthVerifier = new MaxLengthVerifier(8);
 
-        assertTrue(maxLengthVerifier.verify("verify").isOk());
-        assertEquals(PASSED, maxLengthVerifier.verify(VERIFY).getResponse());
+        VerificationResponse verificationResponse = maxLengthVerifier.verify(VERIFY);
+        assertTrue(verificationResponse.isOk());
+        assertEquals(PASSED, verificationResponse.getResponse());
     }
 
     @Test
