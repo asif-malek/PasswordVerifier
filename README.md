@@ -12,7 +12,7 @@
 3.	Assume Each verification takes 1 second to complete. How would you solve items 2 and 3 so tests can run faster?
 
 ## Solution
-To solve the above problem **Rule design** pattern is used.
+To solve the above problem **Rule design** pattern is followed(with some modification). For development TDD is followed. Maven is used for Build and Java 9 for as SDK.
 [ref](https://tenmilesquare.com/resources/software-development/basic-rules-engine-design-pattern/)
 
 All the verification rules are defined in different classes and main Rule engine class is **ComplexPasswordVerifier** which can be used add and remove Verifiers and various verify() methods:
@@ -35,3 +35,12 @@ Execute MainParallel.java
 <img width="986" alt="image" src="https://user-images.githubusercontent.com/14824369/197405902-3169cef8-81be-43bc-a2ee-ec5059c8ad43.png">
 
 **Note:** Main.Java will be slower as delays are added in verification files
+
+## Class Diagram
+<img width="1620" alt="image" src="https://user-images.githubusercontent.com/14824369/197406684-1f820d0d-d565-4122-b7f4-d79241033910.png">
+
+## Code Coverage
+<img width="537" alt="image" src="https://user-images.githubusercontent.com/14824369/197406920-b663fbd7-7837-4fd4-82e5-f85b764248bc.png">
+
+## Future Enhancements
+Reactor framework can be used to improve code.
