@@ -12,7 +12,6 @@ public class NullVerifier implements Verifier{
 
     @Override
     public VerificationResponse verify(String password) {
-
         return StringUtils.isEmpty(password)?new VerificationResponse(false, STRING_IS_NULL):new VerificationResponse(true,PASSED);
     }
 }
