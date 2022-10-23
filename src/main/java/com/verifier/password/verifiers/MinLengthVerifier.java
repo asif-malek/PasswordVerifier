@@ -6,11 +6,11 @@ import java.util.concurrent.TimeUnit;
 
 import static com.verifier.password.VerificationConstants.*;
 
-public class MaxLengthVerifier implements Verifier {
+public class MinLengthVerifier implements Verifier {
 
 
 
-    public MaxLengthVerifier(int length) {
+    public MinLengthVerifier(int length) {
         LENGTH = length;
     }
 
@@ -20,13 +20,12 @@ public class MaxLengthVerifier implements Verifier {
     @Override
     public VerificationResponse verify(String password) {
         try {
-            TimeUnit.SECONDS.sleep(10);
+            TimeUnit.SECONDS.sleep(0);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("finished Max Length verification");
-        boolean ok = password.length()<=LENGTH;
-        String response = (ok)?PASSED: LENGTH_IS_LARGER_THAN +LENGTH;
+        boolean ok = password.length()>=LENGTH;
+        String response = (ok)?PASSED: LENGTH_IS_SMALLER_THAN +LENGTH;
         return new VerificationResponse(ok,response);
     }
 

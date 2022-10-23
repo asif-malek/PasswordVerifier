@@ -39,9 +39,7 @@ public class ComplexPasswordVerifier implements MultiConditionVerifier {
     }
 
     private VerificationResponse setStatus(VerificationResponse response){
-        if(!response.isOk()){
-            this.status=false;
-        }
+        this.status=(!response.isOk())?false:true;
         return response;
     }
 
@@ -155,8 +153,12 @@ public class ComplexPasswordVerifier implements MultiConditionVerifier {
 
             //prepare response
             m.setResponse(Stream.concat(statusList.stream(), m.getResponse().stream()).toList());
-
-            m.setOk(getStatus());
+            long noOfPassedCondition = m.getResponse().stream().filter(s->s==PASSED).count();
+            if (noOfPassedCondition>=noOfConditions){
+                m.setOk(true);
+            }else {
+                m.setOk(false);
+            }
         }
         return m;
     }

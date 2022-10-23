@@ -24,7 +24,7 @@ hs_err_pid*
 /.idea/
 /target/surefire-reports/com.verifier.password.VerificationResponseTest.txt
 /target/surefire-reports/com.verifier.password.LengthVerifierTest.txt
-/target/surefire-reports/com.verifier.password.verifiers.MaxLengthVerifierTest.txt
+/target/surefire-reports/com.verifier.password.verifiers.MinLengthVerifierTest.txt
 /target/surefire-reports/com.verifier.password.verifiers.VerifierTest.txt
 /target/surefire-reports/com.verifier.password.VerifierTest.txt
 /target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
@@ -33,6 +33,6 @@ hs_err_pid*
 /target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst
 /target/surefire-reports/TEST-com.verifier.password.LengthVerifierTest.xml
 /target/surefire-reports/TEST-com.verifier.password.VerificationResponseTest.xml
-/target/surefire-reports/TEST-com.verifier.password.verifiers.MaxLengthVerifierTest.xml
+/target/surefire-reports/TEST-com.verifier.password.verifiers.MinLengthVerifierTest.xml
 /target/surefire-reports/TEST-com.verifier.password.verifiers.VerifierTest.xml
 /target/surefire-reports/TEST-com.verifier.password.VerifierTest.xml

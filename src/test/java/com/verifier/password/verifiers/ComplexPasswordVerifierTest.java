@@ -46,7 +46,7 @@ public class ComplexPasswordVerifierTest {
 
     @Test
     public void shouldContainMultipleVerification(){
-        complexPasswordVerifier.addVerifier(new MaxLengthVerifier(8));
+        complexPasswordVerifier.addVerifier(new MinLengthVerifier(8));
         complexPasswordVerifier.addVerifier(new NullVerifier());
         complexPasswordVerifier.addVerifier(new HasUpperCaseVerifier());
         complexPasswordVerifier.addVerifier(new HasLowerCaseVerifier());
@@ -56,7 +56,7 @@ public class ComplexPasswordVerifierTest {
 
     @Test
     public void shouldApplyMultipleVerifications() throws VerifierException {
-        complexPasswordVerifier.addVerifier(new MaxLengthVerifier(8));
+        complexPasswordVerifier.addVerifier(new MinLengthVerifier(4));
         complexPasswordVerifier.addVerifier(new NullVerifier());
         complexPasswordVerifier.addVerifier(new HasUpperCaseVerifier());
         complexPasswordVerifier.addVerifier(new HasLowerCaseVerifier());
@@ -74,13 +74,13 @@ public class ComplexPasswordVerifierTest {
 
     @Test
     public void emptyStringMultiVerification() throws VerifierException {
-        complexPasswordVerifier.addVerifier(new MaxLengthVerifier(8));
+        complexPasswordVerifier.addVerifier(new MinLengthVerifier(8));
         complexPasswordVerifier.addVerifier(new NullVerifier());
         multiConditionResponse = complexPasswordVerifier.verify("");
-        List<String> expectedList = Arrays.asList(PASSED,STRING_IS_NULL);
+        List<String> expectedList = Arrays.asList(LENGTH_IS_SMALLER_THAN+8,STRING_IS_NULL);
         assertFalse(multiConditionResponse.isOk());
         assertNotEquals(Collections.EMPTY_LIST, multiConditionResponse.getResponse());
-        assertThat(expectedList,is(multiConditionResponse.getResponse()));
+        assertTrue(CollectionUtils.isEqualCollection(expectedList,multiConditionResponse.getResponse()));
 
     }
 
@@ -99,7 +99,7 @@ public class ComplexPasswordVerifierTest {
     @Test
     public void shouldExecutePrimeVerifierAlongWithOtherVerifier()throws VerifierException {
         complexPasswordVerifier.addVerifier(new HasNumberVerifier());
-        multiConditionResponse=  complexPasswordVerifier.verify("Password1",new MaxLengthVerifier(9));
+        multiConditionResponse=  complexPasswordVerifier.verify("Password1",new MinLengthVerifier(9));
         assertTrue(multiConditionResponse.isOk());
         List<String> expectedList = Arrays.asList(PASSED,PASSED);
         assertThat(expectedList,is(multiConditionResponse.getResponse()));
@@ -109,9 +109,9 @@ public class ComplexPasswordVerifierTest {
     public void shouldEFailIfPrimeVerifierNotVerified()throws VerifierException {
         complexPasswordVerifier.addVerifier(new HasNumberVerifier());
 
-        multiConditionResponse =  complexPasswordVerifier.verify("Password1",new MaxLengthVerifier(8));
+        multiConditionResponse =  complexPasswordVerifier.verify("Password1",new MinLengthVerifier(10));
         assertFalse(multiConditionResponse.isOk());
-        List<String> expectedList = Arrays.asList(PASSED,LENGTH_IS_LARGER_THAN);
+        List<String> expectedList = Arrays.asList(PASSED, LENGTH_IS_SMALLER_THAN);
         assertNotEquals(Collections.EMPTY_LIST, multiConditionResponse.getResponse());
 
     }
@@ -119,7 +119,7 @@ public class ComplexPasswordVerifierTest {
     @Test
     public void shouldEPassIfOnlyPrimeVerifierProvided()throws VerifierException {
 
-        multiConditionResponse =  complexPasswordVerifier.verify("Password1",new MaxLengthVerifier(9));
+        multiConditionResponse =  complexPasswordVerifier.verify("Password1",new MinLengthVerifier(9));
         assertTrue(multiConditionResponse.isOk());
         List<String> expectedList = Arrays.asList(PASSED);
         assertNotEquals(Collections.EMPTY_LIST, multiConditionResponse.getResponse());
@@ -128,14 +128,14 @@ public class ComplexPasswordVerifierTest {
 
     @Test
     public void shouldPassIfAtleastSpecificNoOfConditionsVerified() throws VerifierException {
-        complexPasswordVerifier.addVerifier(new MaxLengthVerifier(2));
+        complexPasswordVerifier.addVerifier(new MinLengthVerifier(9));
         complexPasswordVerifier.addVerifier(new NullVerifier());
         complexPasswordVerifier.addVerifier(new HasUpperCaseVerifier());
         complexPasswordVerifier.addVerifier(new HasLowerCaseVerifier());
         complexPasswordVerifier.addVerifier(new HasNumberVerifier());
 
 
-        List<String> expectedList = Arrays.asList(LENGTH_IS_LARGER_THAN+2,PASSED,PASSED,PASSED,STRING_DOES_NOT_CONTAIN_A_NUMBER);
+        List<String> expectedList = Arrays.asList(LENGTH_IS_SMALLER_THAN +9,PASSED,PASSED,PASSED,STRING_DOES_NOT_CONTAIN_A_NUMBER);
         multiConditionResponse =  complexPasswordVerifier.verify("Password",2);
         assertTrue(multiConditionResponse.isOk());
         assertNotEquals(Collections.EMPTY_LIST, multiConditionResponse.getResponse());
@@ -205,7 +205,7 @@ public class ComplexPasswordVerifierTest {
     public void shouldAllowPrimeVerifier() throws VerifierException, ExecutionException, InterruptedException {
 
         List<String> expectedList = Arrays.asList(PASSED);
-        multiConditionResponse = complexPasswordVerifier.verifyInParallel("Verify1",0,new MaxLengthVerifier(8));
+        multiConditionResponse = complexPasswordVerifier.verifyInParallel("Verify1",0,new MinLengthVerifier(4));
         assertTrue(multiConditionResponse.isOk());
         assertNotEquals(Collections.EMPTY_LIST, multiConditionResponse.getResponse());
         System.out.println(multiConditionResponse);
@@ -218,7 +218,7 @@ public class ComplexPasswordVerifierTest {
         complexPasswordVerifier.addVerifier(new HasLowerCaseVerifier());
         complexPasswordVerifier.addVerifier(new HasNumberVerifier());
         List<String> expectedList = Arrays.asList(PASSED,PASSED);
-        multiConditionResponse = complexPasswordVerifier.verifyInParallel("v",2,new MaxLengthVerifier(8));
+        multiConditionResponse = complexPasswordVerifier.verifyInParallel("va",2,new MinLengthVerifier(2));
         assertTrue(multiConditionResponse.isOk());
         assertNotEquals(Collections.EMPTY_LIST, multiConditionResponse.getResponse());
         System.out.println(multiConditionResponse);
