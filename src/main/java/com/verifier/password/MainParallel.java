@@ -13,7 +13,7 @@ public class MainParallel {
         ComplexPasswordVerifier passwordVerifier = new ComplexPasswordVerifier();
 
         //Adding different verifiers
-        passwordVerifier.addVerifier(new MinLengthVerifier(8));
+       // passwordVerifier.addVerifier(new MinLengthVerifier(8));
         passwordVerifier.addVerifier(new HasUpperCaseVerifier());
         passwordVerifier.addVerifier(new HasLowerCaseVerifier());
         passwordVerifier.addVerifier(new NullVerifier());
